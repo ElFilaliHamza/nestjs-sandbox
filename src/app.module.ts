@@ -6,6 +6,7 @@ import { ItemsService } from './items/items.service';
 import { Item } from './item.entity';
 import { Owner } from './owner.entity';
 import { ExportModule } from './export/export.module';
+import { ProtoBufModule } from './protobuf/protobuf.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ExportModule } from './export/export.module';
     }),
     TypeOrmModule.forFeature([Item, Owner]),
     ExportModule,
+    ProtoBufModule,
   ],
   controllers: [ItemsController],
   providers: [ItemsService],

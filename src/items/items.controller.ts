@@ -1,15 +1,18 @@
 // src/items.controller.ts
-import { Controller, Get, Post, Body, Header } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { Item } from '../item.entity';
 import { CreateItemDto } from '../create-item.dto';
 import { Paginate } from 'nestjs-paginate';
 import type { Paginated, PaginateQuery } from 'nestjs-paginate';
-import { ProtobufUtil } from 'src/protobuf/protobuf.util';
+import { ProtobufService } from 'src/protobuf/protobuf.service';
 
 @Controller('items')
 export class ItemsController {
-  constructor(private readonly itemsService: ItemsService) {}
+  constructor(
+    private readonly itemsService: ItemsService,
+    private readonly protobufService: ProtobufService,
+  ) {}
 
   @Post()
   async create(@Body() createItemDto: CreateItemDto): Promise<Item> {
@@ -32,9 +35,13 @@ export class ItemsController {
   }
 
   @Get('items.protobuf')
-  @Header('Content-Type', 'application/protobuf')
   async getItemsProtobuf() {
     const items = await this.itemsService.findAll();
-    return await ProtobufUtil.encodeItems(items);
+    const buffer = await this.protobufService.serializeItems(items);
+    return {
+      base64: buffer.toString('base64'),
+      size: buffer.length,
+      filename: 'items.pb',
+    };
   }
 }
