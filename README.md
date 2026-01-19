@@ -1,4 +1,4 @@
-# Paginate Example
+# NestJS Sandbox
 
 A NestJS learning project where I'm exploring different packages and features to understand how they work.
 
